@@ -48,9 +48,22 @@ export const IconButtonWrapper = styled.div`
 `;
 
 export const Filters = styled.div`
+  width: 500px;
   display: flex;
+  flex-flow: row-reverse wrap;
   justify-content: center;
   & > * {
     margin-inline-end: 8px;
   }
+  max-height: ${({ isExpand }) => (isExpand ? "200px" : "40px")};
+  transition: all 0.5s;
+  overflow: hidden;
+`;
+
+export const Expand = styled.span`
+  align-self: flex-end;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-size: 10px;
+  color: #84ffff;
 `;

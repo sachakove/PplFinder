@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Text from "components/Text";
 import Spinner from "components/Spinner";
 import CheckBox from "components/CheckBox";
 import IconButton from "@material-ui/core/IconButton";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import * as S from "./style";
+import * as C from "constant";
+import { useHistory } from "react-router";
 
-const UserList = ({ users, isLoading }) => {
+const UserList = ({ users, isLoading, handleChecked, handleFavorites, favorites }) => {
   const [hoveredUserId, setHoveredUserId] = useState();
+  const [extand, setExtand] = useState(false);
+  const history = useHistory();
 
   const handleMouseEnter = (index) => {
     setHoveredUserId(index);
@@ -19,12 +23,21 @@ const UserList = ({ users, isLoading }) => {
 
   return (
     <S.UserList>
-      <S.Filters>
-        <CheckBox value="BR" label="Brazil" />
-        <CheckBox value="AU" label="Australia" />
-        <CheckBox value="CA" label="Canada" />
-        <CheckBox value="DE" label="Germany" />
-      </S.Filters>
+      {history.location.pathname === "/" && (
+        <S.Filters isExpand={extand}>
+          <S.Expand color="primary" onClick={() => setExtand(!extand)}>
+            {extand ? "less" : "more..."}
+          </S.Expand>
+          {C.NAT.map((nat, index) => (
+            <CheckBox
+              key={index}
+              value={nat.code}
+              label={nat.name}
+              onChange={handleChecked}
+            />
+          ))}
+        </S.Filters>
+      )}
       <S.List>
         {users.map((user, index) => {
           return (
@@ -46,8 +59,10 @@ const UserList = ({ users, isLoading }) => {
                   {user?.location.city} {user?.location.country}
                 </Text>
               </S.UserInfo>
-              <S.IconButtonWrapper isVisible={index === hoveredUserId}>
-                <IconButton>
+              <S.IconButtonWrapper
+                isVisible={favorites?.includes(user) || index === hoveredUserId}
+              >
+                <IconButton onClick={() => handleFavorites(user)}>
                   <FavoriteIcon color="error" />
                 </IconButton>
               </S.IconButtonWrapper>
